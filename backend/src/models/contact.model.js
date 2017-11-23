@@ -26,18 +26,15 @@ module.exports = function (app) {
       ],
       validate: {
         validator: function (v) {
-          return /^\+(?:[0-9] ?){6,14}[0-9]$/.test(v);
+          return '/^\+(?:[0-9] ?){6,14}[0-9]$/'.test(v);
         },
         message: '{VALUE} is not avalid international phone number!'
       }
     },
     createdAt: {
-      type: Date,
-      '/^\+(?:[0-9] ?){6,14}[0-9]$/default': Date.now
-    },
+      type: Date,'/^\+(?:[0-9] ?){6,14}[0-9]$/default': Date.now},
     updatedAt: {
-      type: Date,
-      'default': Date.now
+      type: Date, 'default': Date.now
     }
   });
   return mongooseClient.model('contact', contact);

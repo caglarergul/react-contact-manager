@@ -11,19 +11,16 @@ const hooks = require('feathers-hooks');
 const rest = require('feathers-rest');
 const socketio = require('feathers-socketio');
 
-const handler = require('feathers-errors/handler');
-const notFound = require('feathers-errors/not-found');
-
 const middleware = require('./middleware');
 const services = require('./services');
 const appHooks = require('./app.hooks');
 
-const mongoose = require('./mongoose');
+const mongodb = require('./mongodb');
 
 const app = feathers();
 
 // Load app configuration
-app.configure(configuration());
+app.configure(configuration(path.join(__dirname, '..')));
 // Enable CORS, security, compression, favicon and body parsing
 app.use(cors());
 app.use(helmet());
@@ -36,18 +33,14 @@ app.use('/', feathers.static(app.get('public')));
 
 // Set up Plugins and providers
 app.configure(hooks());
-app.configure(mongoose);
+app.configure(mongodb);
 app.configure(rest());
 app.configure(socketio());
 
-// Configure other middleware (see `middleware/index.js`)
-app.configure(middleware);
 // Set up our services (see `services/index.js`)
 app.configure(services);
-// Configure a middleware for 404s and the error handler
-app.use(notFound());
-app.use(handler());
-
+// Configure middleware (see `middleware/index.js`) - always has to be last
+app.configure(middleware);
 app.hooks(appHooks);
 
 module.exports = app;
